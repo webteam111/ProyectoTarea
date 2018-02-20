@@ -1,4 +1,4 @@
-var config = require('../configuracion/basededatos');
+var config = require('../Configuracion/basededatos');
 var jwt = require('jsonwebtoken');
 var User = require('../models/registro');
 module.exports = (router) =>{
@@ -8,9 +8,9 @@ module.exports = (router) =>{
        if (!req.body.email) {
            res.json({success: false, message: 'Favor de proporcionar un email'})
        } else {
-            user.email = req.body.email;
-            user.name = req.body.name;
-            user.password = req.body.password;
+            user.Email = req.body.email;
+            user.Nombre = req.body.name;
+            user.Contraseña = req.body.password;
             user.save((err)=>{
                 if (err) {
                     if (err.code == 11000) {
@@ -24,13 +24,14 @@ module.exports = (router) =>{
             })
         }
     })
+    
     router.post('/login',(req,res)=>{
         if (!req.body.email) {
             res.json({success: false, message: 'Ingresar un email'})
         } else if(!req.body.password) {
             res.json({success: false, message: 'Ingresar una contraseña'})
         } else{
-            User.findOne({email: req.body.email},(err,user)=>{
+            User.findOne({Email: req.body.email},(err,user)=>{
                 if (err) {
                     res.json({success: false, message: err})
                 } else {
@@ -42,7 +43,7 @@ module.exports = (router) =>{
                             res.json({success: false, message: 'Contraseña incorrecta'})
                         } else {
                             const token = jwt.sign({userId : user._id}, config.secret,{expiresIn: '24h'});
-                            res.json({success: true, message: 'Usuario autenticado', token: token}) 
+                            res.json({success: true, message: 'Usuario autenticado', token: token})
                         }
                     }
                 }
@@ -68,19 +69,19 @@ module.exports = (router) =>{
       });
 
       router.get('/getProfile', (req,res)=>{
-          user.findOne({_id: req.decoded.userId}, (err,user)=>{
+          User.findOne({_id: req.decoded.userId}, (err,user)=>{
          if (err) {
               res.json({succes: false, message: err})
           }
           else
           {
-              res.json({succes:true, message: err})
+              res.json({succes:true, message: user})
           }
         })
     })
 
     router.put('/registerClient', (req,res)=>{
-    user.update({_id: req.decoded.userId}, {$push: {'client': { 
+    User.update({_id: req.decoded.userId}, {$push: {'client': { 
         'Nombre': req.body.Nombre,
         'Apellido': req.body.Apellido,
         'Edad': req.body.Edad,

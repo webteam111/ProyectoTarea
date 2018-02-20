@@ -1,7 +1,7 @@
 var crypto = require('crypto').randomBytes(256).toString('hex');
 
 module.exports = {
-  uri : 'mongodb:///abonap',
+  uri : 'mongodb://localhost:27017/redSocial',
   secret : crypto,
-  db: 'abonap'
+  db: 'redSocial'
 }

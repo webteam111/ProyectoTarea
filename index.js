@@ -1,14 +1,14 @@
 'use strict';
 
-var express = require('express');
+const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./Configuracion/basededatos');
 const router = express.Router();
 const api = require('./routes/api')(router);
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
-var app = express();
-var port = process.env.PORT || 8080;
+const app = express();
+const port = process.env.PORT || 8080;
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.uri, (err) =>{
@@ -21,8 +21,8 @@ mongoose.connect(config.uri, (err) =>{
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
-
-app.listen(8080, function(){
+app.use('/api', api)
+app.listen(8080, () => {
     console.log('muy bien pendejo');
 
 });
