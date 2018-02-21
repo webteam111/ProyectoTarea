@@ -1,6 +1,7 @@
 var config = require('../Configuracion/basededatos');
 var jwt = require('jsonwebtoken');
 var User = require('../models/registro');
+var ciudad = require('../models/ciudades');
 module.exports = (router) =>{
 
     router.post('/register',(req,res)=>{
@@ -98,7 +99,35 @@ module.exports = (router) =>{
          }
                 
        })
-   })
+   });
+   router.post('/registerciudad',(req,res)=>{
+    let ciudad= new ciudad();
+   
+         ciudad.nombre = req.body.nombre;
+         ciudad.fecha = req.body.fecha;
+         ciudad.like = req.body.compañero;
+         ciudad.compañero = req.body.compañero;
+         ciudad.save((err)=>{
+             if (err) {
+                 if (err.code == 11000) {
+                 res.json({success: false, message: 'ciudad ya registrada'})
+                 } else {
+                 res.json({success: false, message: err})
+                 }
+             } else {
+                 res.json({success: true, message: 'ciudad guardada'})
+             }
+         })
+     });
+ 
+
+
+   router.get("/ciudades", function(req, res){
+       ciudad.find({}, function(err, ciudad){
+           res.status(200).send(ciudad)
+       });
+
+   });
       
 
 

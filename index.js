@@ -23,6 +23,6 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use('/api', api)
 app.listen(8080, () => {
-    console.log('muy bien pendejo');
+    console.log('el programa se conecta con exito');
 
 });
