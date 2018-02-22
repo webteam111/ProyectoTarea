@@ -1,18 +1,18 @@
 'use strict'
 
-var mongoose = require ('mongoose')
+const mongoose = require ('mongoose')
 mongoose.Promise = global.Promise;
-var Schema = mongoose.Schema;
-var bcrypt = require('bcrypt-nodejs');
-var titlize = require('mongoose-title-case');
+const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt-nodejs');
+const titlize = require('mongoose-title-case');
 
-var userSchema = new Schema({
+const userSchema = new Schema({
     Nombre: {type: String},
     Apellido: {type: String},
     Edad: {type: Number},
     Sexo: {type: String},
-    Usuario: {type: String},
-    Email: {type: String},
+    Usuario: {type: String, unique: true},
+    Email: {type: String, unique: true},
     Contraseña: {type: String}, 
     client:[{
         Nombre: {type: String},
@@ -41,7 +41,7 @@ userSchema.pre('save', function(next){
 userSchema.methods.comparePass = function(Contraseña){
     return bcrypt.compareSync(Contraseña, this.Contraseña);
 }
-
+  //Capitaliza primera letra de cada path
   userSchema.plugin(titlize, {
       paths: [ 'name']
   });

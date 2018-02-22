@@ -1,7 +1,7 @@
-var config = require('../Configuracion/basededatos');
-var jwt = require('jsonwebtoken');
-var User = require('../models/registro');
-var ciudad = require('../models/ciudades');
+const config = require('../Configuracion/basededatos');
+const jwt = require('jsonwebtoken');
+const User = require('../models/registro');
+const Ciudad = require('../models/ciudades');
 module.exports = (router) =>{
 
     router.post('/register',(req,res)=>{
@@ -11,7 +11,9 @@ module.exports = (router) =>{
        } else {
             user.Email = req.body.email;
             user.Nombre = req.body.name;
+            user.Usuario = req.body.user;
             user.Contraseña = req.body.password;
+            user.sexo = req.body.sexo;
             user.save((err)=>{
                 if (err) {
                     if (err.code == 11000) {
@@ -52,6 +54,9 @@ module.exports = (router) =>{
         }
     })
 
+    
+ 
+   
     
 	router.use((req,res,next)=>{
         const token = req.headers['autorizacion'];
@@ -101,12 +106,13 @@ module.exports = (router) =>{
        })
    });
    router.post('/registerciudad',(req,res)=>{
-    let ciudad= new ciudad();
+    let ciudad = new Ciudad();
    
          ciudad.nombre = req.body.nombre;
          ciudad.fecha = req.body.fecha;
          ciudad.like = req.body.compañero;
          ciudad.compañero = req.body.compañero;
+         ciudad.userId = req.body.userId;
          ciudad.save((err)=>{
              if (err) {
                  if (err.code == 11000) {
@@ -122,12 +128,59 @@ module.exports = (router) =>{
  
 
 
-   router.get("/ciudades", function(req, res){
-       ciudad.find({}, function(err, ciudad){
-           res.status(200).send(ciudad)
-       });
-
+   router.get('/ciudades', function(req, res){
+       Ciudad.find({userId: req.decoded.userId}).exec((err, city) => {
+           if (err) {
+               res.json({succes: false, message: err})
+           } else {
+               res.json({succes: true, message: city})
+           }
+       })
    });
+
+
+   router.get('/users', (req,res)=>{
+    User.find({}, (err, user)=>{
+        if (err) {
+            res.json({succes: false, message: err})
+        } else {
+            res.json({succes: true, message: user})
+        }
+    })
+})
+
+router.get('/profile/:user', (req, res)=>{
+    User.find({Usuario: req.params.user}, (err,user)=>{
+        if (err) {
+            res.json({succes: false, message: err})
+        } else {
+            res.json({succes: true, message: user})
+        }
+    })
+})
+
+router.delete('/user/:user', (req,res)=>{
+    User.remove({Usuario: req.params.user},(err, user)=>{
+        if (err) {
+            res.json({succes:false, message: err})
+        } else {
+            res.json({succes: true, message: user})
+        }
+    })
+})
+
+router.put('/user/:user', (req,res)=>{
+    User.update({Usuario: req.params.user}, { $set: {
+        email: req.body.email
+    }},{new: true},(err,update)=>{
+        if (err) {
+            res.json({succes: false, message: err})
+        } else {
+            res.json({succes: true, message: update})
+        }
+    })
+});
+   
       
 
 

@@ -1,23 +1,25 @@
 'use strict'
 
-var mongoose = require ('mongoose')
+const mongoose = require ('mongoose')
 mongoose.Promise = global.Promise;
-var Schema = mongoose.Schema;
-var ciudad = mongoose.model('User');
-var bcrypt = require('bcrypt-nodejs');
-var titlize = require('mongoose-title-case');
+const Schema = mongoose.Schema;
+const ciudad = mongoose.model('User');
+const bcrypt = require('bcrypt-nodejs');
+const titlize = require('mongoose-title-case');
 
-var ciudadSchema = new Schema({
-    nombre: {type: String},
+const ciudadSchema = new Schema({
+    nombre: {
+        firstName: String,
+        lastName: String
+    },
     fecha: {type: Date},
     like: {type: String},
-    compañero: {type: String},
-     
-    client:[{
-    nombre: {type: String},
-    fecha: {type: Date},
-    like: {type: String},
-    compañero: {type: String},
+    userId: {type: String},
+    compañero:[{
+        nombre: {type: String},
     }]
 });
 module.exports = mongoose.model('ciudad',ciudadSchema);
+
+
+loopbackc
